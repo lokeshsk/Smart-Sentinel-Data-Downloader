@@ -2,7 +2,7 @@
 
 A flexible and efficient Python tool for downloading Sentinel-1 and Sentinel-2 data from the Copernicus Data Space Ecosystem (CDSE). Download complete products as ZIP files or extract specific files without downloading the entire archive.
 
-## ✨ Features
+## Features
 
 ### Dual Download Modes
 
@@ -20,25 +20,25 @@ A flexible and efficient Python tool for downloading Sentinel-1 and Sentinel-2 d
 
 ### Key Capabilities
 
-- ✅ **Auto-detection**: Automatically identifies Sentinel-1 vs Sentinel-2 products
-- ✅ **UUID & Name Support**: Works with both product UUIDs and full product names
-- ✅ **Resume Support**: Continue interrupted downloads from where they left off
-- ✅ **Rate Limit Handling**: Automatically handles API rate limits
-- ✅ **Parallel Downloads**: Multi-threaded downloading for efficiency
-- ✅ **Progress Tracking**: Real-time progress bars for each download
-- ✅ **Organized Storage**: Automatic organization by mission type
-- ✅ **Production Ready**: Comprehensive error handling and logging
+- **Auto-detection**: Automatically identifies Sentinel-1 vs Sentinel-2 products
+- **UUID & Name Support**: Works with both product UUIDs and full product names
+- **Resume Support**: Continue interrupted downloads from where they left off
+- **Rate Limit Handling**: Automatically handles API rate limits
+- **Parallel Downloads**: Multi-threaded downloading for efficiency
+- **Progress Tracking**: Real-time progress bars for each download
+- **Organized Storage**: Automatic organization by mission type
+- **Production Ready**: Comprehensive error handling and logging
 
-## 📋 Requirements
+## Requirements
 
 - Python 3.7+
 - Copernicus Data Space Ecosystem account ([Register here](https://dataspace.copernicus.eu/))
 
-## 🚀 Installation
+## Installation
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/sentinel-smart-downloader.git
+   git clone [https://github.com/yourusername/sentinel-smart-downloader.git](https://github.com/lokeshsk/Sentinel-Data-Downloader.git)
    cd sentinel-smart-downloader
    ```
 
@@ -55,7 +55,7 @@ A flexible and efficient Python tool for downloading Sentinel-1 and Sentinel-2 d
    SENTINEL_PASS=your_password
    ```
 
-## 📖 Usage
+## Usage
 
 ### Full Product Download (ZIP)
 
@@ -118,7 +118,7 @@ S1A_IW_GRDH_1SDV_20240115T123456_20240115T123521_052345_064F8A_1234
 - Product UUIDs (e.g., `b44fc1ca-4852-488f-a492-929a2e483c4a`)
 - Full product names (e.g., `S2B_MSIL2A_20260113T062129_N0511_R034_T41RMH_20260113T083904`)
 
-## ⚙️ Configuration
+## Configuration
 
 ### Command-line Options
 
@@ -182,7 +182,7 @@ EOF
 python sentinel_downloader.py mixed_ids.txt
 ```
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Authentication Errors
 
@@ -221,7 +221,7 @@ python sentinel_downloader.py mixed_ids.txt
 - For Sentinel-1 GRD products with dual polarization, VH should be present
 - Check product metadata on [Copernicus Browser](https://dataspace.copernicus.eu/browser/)
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 sentinel-smart-downloader/
@@ -240,7 +240,7 @@ sentinel-smart-downloader/
     └── s2_tci/
 ```
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -259,16 +259,16 @@ FILE_PATTERNS = {
 }
 ```
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/) for providing free access to Sentinel data
 - ESA for the Sentinel missions
 
-## 📮 Support
+## Support
 
 - **Issues**: [GitHub Issues](https://github.com/yourusername/sentinel-smart-downloader/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/yourusername/sentinel-smart-downloader/discussions)
