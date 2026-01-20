@@ -38,7 +38,7 @@ A flexible and efficient Python tool for downloading Sentinel-1 and Sentinel-2 d
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/sentinel-smart-downloader.git
+   git clone https://github.com/lokeshsk/Sentinel-Data-Downloader.git
    cd sentinel-smart-downloader
    ```
 
