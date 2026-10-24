@@ -1,0 +1,12 @@
+# Sample Sentinel Product IDs for testing
+# Both CDSE Product UUIDs and Full SAFE Product Names are supported
+
+# Sentinel-2 L2A Product (UUID)
+b44fc1ca-4852-488f-a492-929a2e483c4a
+
+# Sentinel-2 L2A Product (Full Product Name)
+S2B_MSIL2A_20240113T062129_N0510_R034_T41RMH_20240113T083904
+
+# Sentinel-1 GRD Product (Full Product Name)
+S1A_IW_GRDH_1SDV_20240115T123456_20240115T123521_052345_064F8A_1234
+
