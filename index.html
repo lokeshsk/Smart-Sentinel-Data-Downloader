@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Sentinel Data Downloader | Documentation</title>
+  <meta name="description" content="Fast, selective, and robust Sentinel-1 and Sentinel-2 satellite data downloader for the Copernicus Data Space Ecosystem (CDSE).">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛰️</text></svg>">
+  <style>
+    :root {
+      --bg-main: #0b0f19;
+      --bg-card: #111827;
+      --bg-sidebar: #0d1322;
+      --bg-code: #161f30;
+      --border: #1f293d;
+      --border-focus: #38bdf8;
+      --text-main: #f3f4f6;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --primary: #06b6d4;
+      --primary-hover: #0891b2;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --sidebar-width: 280px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+
+    /* Top Nav */
+    header.navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      height: 64px;
+      background: rgba(11, 15, 25, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+
+    .brand-badge {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      font-size: 0.75rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover {
+      color: var(--primary);
+    }
+
+    .btn-github {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-github:hover {
+      border-color: var(--primary);
+      background: #1a2336;
+    }
+
+    /* Layout */
+    .container {
+      display: flex;
+      flex: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Sidebar */
+    aside.sidebar {
+      width: var(--sidebar-width);
+      position: sticky;
+      top: 64px;
+      height: calc(100vh - 64px);
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      background: var(--bg-sidebar);
+      padding: 1.5rem 1rem;
+    }
+
+    .search-box {
+      margin-bottom: 1.5rem;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+    }
+
+    .nav-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .nav-group-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      margin-bottom: 0.5rem;
+      padding-left: 0.5rem;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+    }
+
+    .sidebar-menu li a {
+      display: block;
+      padding: 0.35rem 0.75rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      border-radius: 6px;
+      transition: all 0.15s;
+    }
+
+    .sidebar-menu li a:hover, .sidebar-menu li a.active {
+      background: rgba(6, 182, 212, 0.1);
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    /* Main Content */
+    main.content {
+      flex: 1;
+      padding: 2.5rem 3rem;
+      max-width: 950px;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #38bdf8;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+      color: var(--text-muted);
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    strong {
+      color: #fff;
+    }
+
+    /* Hero section */
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(16, 185, 129, 0.04) 100%);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.2;
+      background: linear-gradient(to right, #38bdf8, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge-pill {
+      font-size: 0.8rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      font-weight: 600;
+      background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #334155;
+    }
+
+    .badge-pill.success {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-pill.info {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    /* Code Blocks */
+    .code-container {
+      position: relative;
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(17, 24, 39, 0.8);
+      border-bottom: 1px solid var(--border);
+      padding: 0.4rem 1rem;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      font-family: monospace;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 1px solid #334155;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #334155;
+      color: #fff;
+    }
+
+    pre {
+      padding: 1rem;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.85em;
+      color: #38bdf8;
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: inherit;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+      background: var(--bg-card);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: rgba(17, 24, 39, 0.9);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Cards */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      transition: border 0.2s;
+    }
+
+    .card:hover {
+      border-color: rgba(6, 182, 212, 0.5);
+    }
+
+    .card h4 {
+      font-size: 1.05rem;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+
+    .card p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      background: var(--bg-sidebar);
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 900px) {
+      aside.sidebar {
+        display: none;
+      }
+      main.content {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <a href="#" class="brand">
+      <span>🛰️ Smart Sentinel Downloader</span>
+      <span class="brand-badge">v1.0.0</span>
+    </a>
+    <div class="nav-links">
+      <a href="https://lokeshsk.github.io" class="nav-link" target="_blank">Author Portfolio</a>
+      <a href="https://github.com/lokeshsk/Smart-Sentinel-Data-Downloader" class="btn-github" target="_blank">
+        <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        GitHub
+      </a>
+    </div>
+  </header>
+
+  <!-- Container -->
+  <div class="container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="search-box">
+        <input type="text" id="docSearch" class="search-input" placeholder="Filter documentation...">
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">Getting Started</div>
+        <ul class="sidebar-menu">
+          <li><a href="#overview" class="active">Overview</a></li>
+          <li><a href="#features">Key Capabilities</a></li>
+          <li><a href="#installation">Installation Guide</a></li>
+          <li><a href="#authentication">Authentication</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">CLI Commands</div>
+        <ul class="sidebar-menu">
+          <li><a href="#cli-search">sentinel-dl search</a></li>
+          <li><a href="#cli-download">sentinel-dl download</a></li>
+          <li><a href="#cli-composites">RGB / False Color Composites</a></li>
+          <li><a href="#cli-export">GeoJSON & CSV Export</a></li>
+          <li><a href="#cli-info">sentinel-dl info</a></li>
+          <li><a href="#cli-auth">sentinel-dl auth</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">Presets & Formats</div>
+        <ul class="sidebar-menu">
+          <li><a href="#band-presets">Band Presets Table</a></li>
+          <li><a href="#sentinel1">Sentinel-1 Polarizations</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">Python SDK</div>
+        <ul class="sidebar-menu">
+          <li><a href="#python-quickstart">Programmatic Usage</a></li>
+          <li><a href="#python-processors">Geospatial Processing</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">Community & Support</div>
+        <ul class="sidebar-menu">
+          <li><a href="#benchmarks">Bandwidth Savings</a></li>
+          <li><a href="#contributing">Contributing</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content">
+
+      <!-- Hero Banner -->
+      <section class="hero-banner">
+        <h1 class="hero-title">Smart Sentinel Downloader</h1>
+        <p class="hero-subtitle">
+          A high-performance Python SDK and CLI tool for discovering, streaming, and selectively downloading 
+          <strong>Sentinel-1</strong> and <strong>Sentinel-2</strong> satellite imagery from the 
+          <strong>Copernicus Data Space Ecosystem (CDSE)</strong>.
+        </p>
+
+        <div class="badges">
+          <span class="badge-pill success">Release v1.0.0</span>
+          <span class="badge-pill info">Python 3.8 – 3.14</span>
+          <span class="badge-pill">MIT License</span>
+          <span class="badge-pill">Astral uv Powered</span>
+        </div>
+
+        <div class="code-container" style="margin-bottom: 0;">
+          <div class="code-header">
+            <span>Terminal</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code># Install globally and download True Color bands directly
+pip install smart-sentinel-downloader
+sentinel-dl search --bbox 12.3 41.7 12.7 42.1 --start 2024-05-01 --download --bands rgb</code></pre>
+        </div>
+      </section>
+
+      <!-- Overview -->
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>
+          Following the retirement of ESA's legacy SciHub (Copernicus Open Access Hub), the global remote sensing and Earth Observation (EO) community migrated to the Copernicus Data Space Ecosystem (CDSE). Standard portals force users to download entire multi-gigabyte <code>.SAFE</code> ZIP archives just to inspect a single 10m visible band or SAR polarization.
+        </p>
+        <p>
+          <strong>Smart Sentinel Downloader</strong> solves this by allowing selective asset extraction directly over HTTP with cryptographic validation, automatic download resumption, STAC catalog queries, and automated GeoTIFF composite generation.
+        </p>
+      </section>
+
+      <!-- Features Grid -->
+      <section id="features">
+        <h2>Key Capabilities</h2>
+        <div class="card-grid">
+          <div class="card">
+            <h4>⚡ 90% Bandwidth Savings</h4>
+            <p>Download only target bands (TCI, RGB, NIR, NDVI) rather than the complete 1.1 GB SAFE package.</p>
+          </div>
+          <div class="card">
+            <h4>🔍 Built-in STAC Search</h4>
+            <p>Search by bounding box, date range, and maximum cloud cover percentage without opening a browser.</p>
+          </div>
+          <div class="card">
+            <h4>🔄 Resumable HTTP Transfers</h4>
+            <p>Automatic byte-range (<code>Range: bytes=...</code>) resumption so dropped connections never start over from 0%.</p>
+          </div>
+          <div class="card">
+            <h4>🛡️ Cryptographic Integrity</h4>
+            <p>Automated MD5 and SHA256 checksum verification against CDSE metadata before file staging.</p>
+          </div>
+          <div class="card">
+            <h4>🗺️ QGIS & ArcGIS Export</h4>
+            <p>Export search footprints straight to GeoJSON or CSV with one click.</p>
+          </div>
+          <div class="card">
+            <h4>🎨 Auto GeoTIFF Composites</h4>
+            <p>Automatically merge single-band JP2 rasters into 3-band True Color or False Color GeoTIFFs.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Installation -->
+      <section id="installation">
+        <h2>Installation Guide</h2>
+        <p>Smart Sentinel Downloader is available as a global CLI command (<code>sentinel-dl</code> / <code>smart-sentinel</code>) and an importable Python library.</p>
+
+        <h3>1. Global CLI Install (Recommended)</h3>
+        <p>Install via <code>pip</code> or Astral <code>uv tool</code> for isolated, instant terminal access from any directory:</p>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span>Terminal</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code># Standard install via pip
+pip install smart-sentinel-downloader
+
+# With optional geospatial extras (rasterio for JP2 -> COG & Composites)
+pip install "smart-sentinel-downloader[geo]"
+
+# Or via Astral uv tool (isolated global CLI)
+uv tool install smart-sentinel-downloader</code></pre>
+        </div>
+
+        <h3>2. From Source</h3>
+        <div class="code-container">
+          <div class="code-header">
+            <span>Bash</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code>git clone https://github.com/lokeshsk/Smart-Sentinel-Data-Downloader.git
+cd Smart-Sentinel-Data-Downloader
+uv venv
+uv pip install -e ".[dev]"</code></pre>
+        </div>
+      </section>
+
+      <!-- Authentication -->
+      <section id="authentication">
+        <h2>Authentication</h2>
+        <p>
+          Register for a free account at the <a href="https://dataspace.copernicus.eu/" target="_blank" style="color:var(--primary);">Copernicus Data Space Ecosystem</a>.
+        </p>
+        <p>Create a <code>.env</code> file in your project or root directory:</p>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span>.env</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code>SENTINEL_USER=your_email@example.com
+SENTINEL_PASS=your_secret_password</code></pre>
+        </div>
+
+        <p>Verify connectivity and credentials directly in your terminal:</p>
+        <div class="code-container">
+          <div class="code-header">
+            <span>Terminal</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code>sentinel-dl auth</code></pre>
+        </div>
+      </section>
+
+      <!-- CLI Reference -->
+      <section id="cli-search">
+        <h2>CLI Command Reference</h2>
+        
+        <h3>1. Catalog Search (<code>sentinel-dl search</code>)</h3>
+        <p>Query CDSE STAC and OData catalog using spatial bounding boxes, dates, and cloud thresholds:</p>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span>Terminal</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code># Search Sentinel-2 scenes over Rome with <15% cloud cover
+sentinel-dl search \
+  --bbox 12.3 41.7 12.7 42.1 \
+  --start 2024-05-01 \
+  --end 2024-05-31 \
+  --max-cloud 15 \
+  --limit 5
+
+# Direct Search & Download
+sentinel-dl search --bbox 77.1 28.5 77.3 28.7 --start 2024-06-01 --download --bands rgb</code></pre>
+        </div>
+      </section>
+
+      <section id="cli-export">
+        <h3>2. GeoJSON & CSV Search Export (<code>--export</code>)</h3>
+        <p>Export footprints for instant viewing in QGIS, ArcGIS, or tabular analysis:</p>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span>Terminal</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code># Export footprints to GeoJSON
+sentinel-dl search --bbox 12.3 41.7 12.7 42.1 --start 2024-05-01 --export footprints.geojson
+
+# Export tabular metadata to CSV
+sentinel-dl search --bbox 77.1 28.5 77.3 28.7 --start 2024-06-01 --export summary.csv</code></pre>
+        </div>
+      </section>
+
+      <section id="cli-download">
+        <h3>3. Product Download (<code>sentinel-dl download</code>)</h3>
+        <p>Download full product ZIPs or selective bands using product UUIDs or SAFE names:</p>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span>Terminal</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code># Selective download: True Color & 10m RGB bands
+sentinel-dl download b44fc1ca-4852-488f-a492-929a2e483c4a --bands rgb
+
+# Selective download: Red (B04) and NIR (B08) for NDVI
+sentinel-dl download S2B_MSIL2A_20240113T062129_... --bands ndvi
+
+# Full complete ZIP download with resume support
+sentinel-dl download b44fc1ca-4852-488f-a492-929a2e483c4a --type full
+
+# Batch download from text file with 8 worker threads
+sentinel-dl download --file sample_ids.txt --workers 8 --output-dir ./data</code></pre>
+        </div>
+      </section>
+
+      <section id="cli-composites">
+        <h3>4. Automated GeoTIFF Composites (<code>--composite</code>)</h3>
+        <p>Automatically merges constituent bands into a georeferenced 3-band GeoTIFF:</p>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span>Terminal</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code># Natural True Color RGB Composite (B04, B03, B02)
+sentinel-dl download b44fc1ca-4852-488f-a492-929a2e483c4a --composite rgb
+
+# False Color Infrared Composite (B08 NIR, B04 Red, B03 Green)
+sentinel-dl download b44fc1ca-4852-488f-a492-929a2e483c4a --composite false-color</code></pre>
+        </div>
+      </section>
+
+      <section id="cli-info">
+        <h3>5. Product Inspection (<code>sentinel-dl info</code>)</h3>
+        <p>Inspect internal file assets, resolutions, and sizes before downloading:</p>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span>Terminal</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code>sentinel-dl info b44fc1ca-4852-488f-a492-929a2e483c4a</code></pre>
+        </div>
+      </section>
+
+      <!-- Presets Table -->
+      <section id="band-presets">
+        <h2>Band Presets Reference</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Mission</th>
+              <th>Preset</th>
+              <th>Bands Included</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Sentinel-2</strong></td>
+              <td><code>rgb</code></td>
+              <td>TCI, B04, B03, B02</td>
+              <td>Natural visual True Color + 10m visible channels</td>
+            </tr>
+            <tr>
+              <td><strong>Sentinel-2</strong></td>
+              <td><code>tci</code></td>
+              <td>TCI</td>
+              <td>True Color Image (single 10m visual asset)</td>
+            </tr>
+            <tr>
+              <td><strong>Sentinel-2</strong></td>
+              <td><code>vnir</code></td>
+              <td>B02, B03, B04, B08</td>
+              <td>10m Visible & Near-Infrared</td>
+            </tr>
+            <tr>
+              <td><strong>Sentinel-2</strong></td>
+              <td><code>ndvi</code></td>
+              <td>B04, B08</td>
+              <td>Red + NIR for vegetation index calculation</td>
+            </tr>
+            <tr>
+              <td><strong>Sentinel-2</strong></td>
+              <td><code>ndwi</code></td>
+              <td>B03, B08</td>
+              <td>Green + NIR for water delineation</td>
+            </tr>
+            <tr>
+              <td><strong>Sentinel-2</strong></td>
+              <td><code>swir</code></td>
+              <td>B11, B12, B8A</td>
+              <td>Short-wave infrared for moisture & fire scars</td>
+            </tr>
+            <tr>
+              <td><strong>Sentinel-2</strong></td>
+              <td><code>scl</code></td>
+              <td>SCL</td>
+              <td>20m Scene Classification Layer (cloud mask)</td>
+            </tr>
+            <tr>
+              <td><strong>Sentinel-2</strong></td>
+              <td><code>all</code></td>
+              <td>All 13 spectral bands + TCI + SCL</td>
+              <td>Complete multi-spectral asset suite</td>
+            </tr>
+            <tr>
+              <td><strong>Sentinel-1</strong></td>
+              <td><code>vh</code></td>
+              <td>VH</td>
+              <td>Cross-polarization SAR TIFF</td>
+            </tr>
+            <tr>
+              <td><strong>Sentinel-1</strong></td>
+              <td><code>vv</code></td>
+              <td>VV</td>
+              <td>Co-polarization SAR TIFF</td>
+            </tr>
+            <tr>
+              <td><strong>Sentinel-1</strong></td>
+              <td><code>dual</code></td>
+              <td>VH, VV</td>
+              <td>Dual polarization SAR pair</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Python SDK -->
+      <section id="python-quickstart">
+        <h2>Python SDK Usage</h2>
+        <p>Integrate directly into Jupyter Notebooks, automated data pipelines, or machine learning workflows:</p>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span>Python</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code>from smart_sentinel import CDSEClient, Downloader, export_search_results
+
+# 1. Initialize client
+client = CDSEClient()
+
+# 2. Search catalog
+scenes = client.search(
+    collection="SENTINEL-2",
+    bbox=[12.3, 41.7, 12.7, 42.1],
+    start_date="2024-05-01",
+    end_date="2024-05-15",
+    max_cloud_cover=10.0,
+    limit=5
+)
+
+# 3. Export footprints to GeoJSON
+export_search_results(scenes, "search_footprints.geojson")
+
+# 4. Download selective bands with automated RGB composite
+downloader = Downloader(client=client, download_dir="./downloads")
+results = downloader.download_selective_bands(scenes[0].id, composite="rgb")
+
+for r in results:
+    print(f"Downloaded: {r.filename} -> {r.output_path}")</code></pre>
+        </div>
+      </section>
+
+      <section id="python-processors">
+        <h3>Geospatial Post-Processing API</h3>
+        <div class="code-container">
+          <div class="code-header">
+            <span>Python</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code>from pathlib import Path
+from smart_sentinel.processors import convert_jp2_to_geotiff, calculate_ndvi
+
+# Convert Sentinel-2 JPEG2000 into standard GeoTIFF
+geotiff = convert_jp2_to_geotiff(Path("downloads/T41RMH_B04_10m.jp2"))
+
+# Compute NDVI raster
+ndvi = calculate_ndvi(
+    b04_path=Path("downloads/T41RMH_B04_10m.jp2"),
+    b08_path=Path("downloads/T41RMH_B08_10m.jp2"),
+    output_path=Path("downloads/ndvi.tif")
+)</code></pre>
+        </div>
+      </section>
+
+      <!-- Benchmarks -->
+      <section id="benchmarks">
+        <h2>Benchmarks: Bandwidth Savings</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Download Target</th>
+              <th>Legacy Full Product ZIP</th>
+              <th>Smart Selective Downloader</th>
+              <th>Savings</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>True Color (TCI 10m)</td>
+              <td>1,120 MB</td>
+              <td><strong>115 MB</strong></td>
+              <td><span style="color:var(--accent); font-weight:700;">89.7% Saved</span></td>
+            </tr>
+            <tr>
+              <td>NDVI Bands (B04 + B08)</td>
+              <td>1,120 MB</td>
+              <td><strong>220 MB</strong></td>
+              <td><span style="color:var(--accent); font-weight:700;">80.3% Saved</span></td>
+            </tr>
+            <tr>
+              <td>Sentinel-1 VH Polarization</td>
+              <td>850 MB</td>
+              <td><strong>140 MB</strong></td>
+              <td><span style="color:var(--accent); font-weight:700;">83.5% Saved</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Maintained by <a href="https://lokeshsk.github.io" target="_blank">Lokesh S K</a> · 
+      Open Source under the <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a> · 
+      <a href="https://github.com/lokeshsk/Smart-Sentinel-Data-Downloader" target="_blank">GitHub Repository</a>
+    </p>
+  </footer>
+
+  <script>
+    function copyCode(btn) {
+      const pre = btn.closest('.code-container').querySelector('pre code');
+      navigator.clipboard.writeText(pre.innerText).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = 'Copied!';
+        btn.style.borderColor = 'var(--accent)';
+        btn.style.color = 'var(--accent)';
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.style.borderColor = '';
+          btn.style.color = '';
+        }, 2000);
+      });
+    }
+
+    // Sidebar search filter
+    const searchInput = document.getElementById('docSearch');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const val = e.target.value.toLowerCase();
+        const links = document.querySelectorAll('.sidebar-menu li');
+        links.forEach(li => {
+          const text = li.innerText.toLowerCase();
+          li.style.display = text.includes(val) ? '' : 'none';
+        });
+      });
+    }
+  </script>
+</body>
+</html>
+
